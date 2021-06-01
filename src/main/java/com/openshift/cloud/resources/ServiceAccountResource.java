@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.openshift.cloud.api.models.ServiceAccount;
+import com.openshift.cloud.api.models.ServiceAccountList;
+import com.openshift.cloud.api.models.ServiceAccountListItem;
 import com.openshift.cloud.api.models.ServiceAccountRequest;
 
 import io.quarkus.security.Authenticated;
@@ -42,25 +44,47 @@ public class ServiceAccountResource {
     JsonWebToken token;
 
     @GET
-    @Path("/{name}")
-    public Response get(@PathParam("name") String name) {
-        if (accounts.containsKey(name)) {
-            LOGGER.info("Returning existing ServiceAccount {}", accounts.get(name));
-            return Response.ok(accounts.get(name)).build();
+    @Path("/{id}")
+    public Response get(@PathParam("id") String id) {
+        if (accounts.containsKey(id)) {
+            LOGGER.info("Returning existing ServiceAccount {}", accounts.get(id));
+            return Response.ok(accounts.get(id)).build();
         }
-        LOGGER.info("Not found ServiceAccount {}", name);
+        LOGGER.info("Not found ServiceAccount {}", id);
         return Response.noContent().build();
 
     }
 
+
+    @GET
+    public Response get() {
+        LOGGER.info("List ServiceAccounts");
+        ServiceAccountList list = new ServiceAccountList();
+        accounts.values().stream().forEach(sa -> list.addItemsItem(toListItem(sa)));
+        return Response.ok(list).build();
+    }
+
+    private ServiceAccountListItem toListItem(ServiceAccount sa) {
+        ServiceAccountListItem item = new ServiceAccountListItem();
+        item.setId(sa.getId());
+        item.setName(sa.getName());
+        item.setDescription(sa.getDescription());
+        item.setCreatedAt(sa.getCreatedAt());
+        item.setOwner(sa.getOwner());
+        item.setHref(sa.getHref());
+        item.setKind(sa.getKind());
+        item.setClientID(sa.getClientID());
+        return item;
+    }
+
     @POST
-    @Path("/{name}/reset-credentials")
-    public Response reset(@PathParam("name") String name) {
-        if (accounts.containsKey(name)) {
-            LOGGER.info("Reset credentials for existing ServiceAccount {}", accounts.get(name));
-            return Response.ok(setCredentials(accounts.get(name))).build();
+    @Path("/{id}/reset-credentials")
+    public Response reset(@PathParam("id") String id) {
+        if (accounts.containsKey(id)) {
+            LOGGER.info("Reset credentials for existing ServiceAccount {}", accounts.get(id));
+            return Response.ok(setCredentials(accounts.get(id))).build();
         }
-        LOGGER.info("Not found ServiceAccount {}", name);
+        LOGGER.info("Not found ServiceAccount {}", id);
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
@@ -74,14 +98,14 @@ public class ServiceAccountResource {
         serviceAccount.description(request.getDescription());
         serviceAccount.createdAt(ZonedDateTime.now().toOffsetDateTime());
         serviceAccount.setOwner(owner);
-        accounts.put(request.getName(), serviceAccount);
+        accounts.put(serviceAccount.getId(), serviceAccount);
         return setCredentials(serviceAccount);
     }
 
     @DELETE
-    @Path("/{name}")
-    public Response delete(@PathParam("name") String name) {
-        accounts.remove(name);
+    @Path("/{id}")
+    public Response delete(@PathParam("id") String id) {
+        accounts.remove(id);
         return Response.noContent().build();
     }
 
