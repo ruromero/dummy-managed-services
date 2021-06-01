@@ -1,9 +1,39 @@
-# Mock Managed-services
+# Dummy managed services
 
 This application replicates the Managed services REST API. It aims to help other developers willing to integrate
 with this API.
 
+It implements as an in-memory storage and all dependent values will be generated randomly.
+
 It is possible to use an existing Keycloak for authentication and token propagation.
+
+Make sure you provide the necessary environment variables
+
+* `SSO_URL`: Full URL for Keycloak. e.g. https://myexample.com/auth/realms/myrealm/
+* `SSO_CLIENT_ID`: Client name configured in Keycloak
+* `SSO_CLIENT_SECRET`: Client secret for the given name
+
+## Supported services
+
+At this moment these are the implemented services:
+
+### ServiceAccount
+
+```shell script
+$ curl -X POST -H "Content-type: application/json" http://localhost:8080/api/managed-services-api/v1/serviceaccounts -d '{"name": "foo", "description": "bar"}' | jq
+{
+  "id": "a3e02fb2-0ede-404f-93ac-6fdd4941256b",
+  "kind": null,
+  "href": null,
+  "name": "foo",
+  "description": "bar",
+  "clientID": "svc-acc-275792144",
+  "clientSecret": "9e30213a-d798-4c35-b740-0003453e1bc8",
+  "owner": "unknown",
+  "created_at": "2021-06-01T17:55:46.348782+02:00"
+}
+
+```
 
 ## Running the application in dev mode
 
@@ -43,13 +73,3 @@ Or, if you don't have GraalVM installed, you can run the native executable build
 ```
 
 You can then execute your native executable with: `./target/dummy-managed-services-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.html.
-
-## Provided examples
-
-### RESTEasy JAX-RS example
-
-REST is easy peasy with this Hello World RESTEasy resource.
-
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
