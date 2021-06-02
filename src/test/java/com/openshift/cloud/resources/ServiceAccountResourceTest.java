@@ -2,23 +2,17 @@ package com.openshift.cloud.resources;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.openshift.cloud.ApiException;
-import com.openshift.cloud.api.DefaultApi;
 import com.openshift.cloud.api.models.ServiceAccount;
 import com.openshift.cloud.api.models.ServiceAccountList;
 import com.openshift.cloud.api.models.ServiceAccountRequest;
-import com.openshift.cloud.auth.HttpBearerAuth;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
-import io.restassured.RestAssured;
-import io.smallrye.jwt.build.Jwt;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -28,17 +22,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
-@QuarkusTestResource(OidcWiremockTestResource.class)
-class ServiceAccountResourceTest {
-
-    private DefaultApi api = new DefaultApi();
-
-    @BeforeEach
-    void init() {
-        api.getApiClient().setBasePath("http://localhost:" + RestAssured.port);
-        HttpBearerAuth bearer = (HttpBearerAuth) api.getApiClient().getAuthentication("Bearer");
-        bearer.setBearerToken(getAccessToken("bob", Set.of("user")));
-    }
+class ServiceAccountResourceTest extends AbstractResourceTest {
 
     @Test
     void testGet() throws ApiException {
@@ -104,13 +88,4 @@ class ServiceAccountResourceTest {
         });
     }
 
-    private String getAccessToken(String userName, Set<String> groups) {
-        return Jwt.preferredUserName(userName)
-                .groups(groups)
-                .issuer("https://server.example.com")
-                .audience("https://service.example.com")
-                .jws()
-                .keyId("1")
-                .sign();
-    }
 }

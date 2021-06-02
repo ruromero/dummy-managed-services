@@ -55,7 +55,6 @@ public class ServiceAccountResource {
 
     }
 
-
     @GET
     public Response get() {
         LOGGER.info("List ServiceAccounts");
