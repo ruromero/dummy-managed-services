@@ -7,11 +7,14 @@ It implements as an in-memory storage and all dependent values will be generated
 
 It is possible to use an existing Keycloak for authentication and token propagation.
 
-Make sure you provide the necessary environment variables
+Use the following environment variables to set up authentication:
 
+* `quarkus.oidc.tenant-enabled`: If `false` the `SSO_*` environment variables will not be used and authentication
+will be disabled.
 * `SSO_URL`: Full URL for Keycloak. e.g. https://myexample.com/auth/realms/myrealm/
 * `SSO_CLIENT_ID`: Client name configured in Keycloak
 * `SSO_CLIENT_SECRET`: Client secret for the given name
+
 
 ## Supported services
 
@@ -57,6 +60,26 @@ $ curl -H "content-type: application/json" -H "accept: application/json" -H "Aut
   "version": null
 }
 
+```
+
+## Running the application from a container
+
+A container image already exists in [quay.io/ruben/dummy-managed-services](https://quay.io/repository/ruben/dummy-managed-services)
+
+```shell script
+podman run -d -e SSO_URL=http://localhost:8180/auth/realms/myrealm/ \
+  -e SSO_CLIENT_ID=managed-services \
+  -e SSO_CLIENT_SECRET=secret \
+  -p 18080:8080 \
+  quay.io/ruben/dummy-managed-services:latest
+```
+
+Or with authentication disabled
+
+```shell script
+podman run -d -e quarkus.oidc.tenant-enabled=false \
+  -p 18080:8080 \
+  quay.io/ruben/dummy-managed-services:latest
 ```
 
 ## Running the application in dev mode
