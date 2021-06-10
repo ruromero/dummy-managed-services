@@ -40,7 +40,7 @@ jobs:
     - name: Build with Maven
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: export LANG=en_US && ./mvnw -e -B -fae --settings .github/mvn-settings.xml clean install -Dstart-containers
+      run: export LANG=en_US && ./mvnw -e -B -fae clean install -Dstart-containers
     - name: Delete Local Artifacts From Cache
       shell: bash
       run: rm -rf ~/.m2/repository/com/openshift/cloud/dummy-managed-services
