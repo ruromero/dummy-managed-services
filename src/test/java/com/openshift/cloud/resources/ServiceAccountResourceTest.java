@@ -5,14 +5,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.openshift.cloud.ApiException;
-import com.openshift.cloud.api.models.ServiceAccount;
-import com.openshift.cloud.api.models.ServiceAccountList;
-import com.openshift.cloud.api.models.ServiceAccountRequest;
+import com.openshift.cloud.api.kas.invoker.ApiException;
+import com.openshift.cloud.api.kas.models.ServiceAccount;
+import com.openshift.cloud.api.kas.models.ServiceAccountList;
+import com.openshift.cloud.api.kas.models.ServiceAccountRequest;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;

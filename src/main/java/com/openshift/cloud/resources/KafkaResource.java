@@ -3,7 +3,6 @@ package com.openshift.cloud.resources;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -22,13 +21,9 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.openshift.cloud.api.models.KafkaRequest;
-import com.openshift.cloud.api.models.KafkaRequestList;
-import com.openshift.cloud.api.models.KafkaRequestPayload;
-import com.openshift.cloud.api.models.ServiceAccount;
-import com.openshift.cloud.api.models.ServiceAccountList;
-import com.openshift.cloud.api.models.ServiceAccountListItem;
-import com.openshift.cloud.api.models.ServiceAccountRequest;
+import com.openshift.cloud.api.kas.models.KafkaRequest;
+import com.openshift.cloud.api.kas.models.KafkaRequestList;
+import com.openshift.cloud.api.kas.models.KafkaRequestPayload;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -38,7 +33,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class KafkaResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaResource.class);
-    private static final Random RND = new Random();
 
     private Map<String, KafkaRequest> kafkas = new HashMap<>();
 

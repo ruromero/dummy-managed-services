@@ -21,12 +21,10 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.openshift.cloud.api.models.ServiceAccount;
-import com.openshift.cloud.api.models.ServiceAccountList;
-import com.openshift.cloud.api.models.ServiceAccountListItem;
-import com.openshift.cloud.api.models.ServiceAccountRequest;
-
-import io.quarkus.security.Authenticated;
+import com.openshift.cloud.api.kas.models.ServiceAccount;
+import com.openshift.cloud.api.kas.models.ServiceAccountList;
+import com.openshift.cloud.api.kas.models.ServiceAccountListItem;
+import com.openshift.cloud.api.kas.models.ServiceAccountRequest;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -36,7 +34,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServiceAccountResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceAccountResource.class);
-    private static final Random RND = new Random();
+    private final Random rnd = new Random();
 
     private Map<String, ServiceAccount> accounts = new HashMap<>();
 
@@ -115,7 +113,7 @@ public class ServiceAccountResource {
         acc.setId(original.getId());
         acc.setCreatedAt(original.getCreatedAt());
         acc.setDescription(original.getDescription());
-        acc.setClientID("svc-acc" + RND.nextInt());
+        acc.setClientID("svc-acc" + rnd.nextInt());
         acc.setClientSecret(UUID.randomUUID().toString());
         return acc;
     }

@@ -5,15 +5,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.openshift.cloud.ApiException;
-import com.openshift.cloud.api.models.Error;
-import com.openshift.cloud.api.models.KafkaRequest;
-import com.openshift.cloud.api.models.KafkaRequestList;
-import com.openshift.cloud.api.models.KafkaRequestPayload;
+import com.openshift.cloud.api.kas.invoker.ApiException;
+import com.openshift.cloud.api.kas.models.Error;
+import com.openshift.cloud.api.kas.models.KafkaRequest;
+import com.openshift.cloud.api.kas.models.KafkaRequestList;
+import com.openshift.cloud.api.kas.models.KafkaRequestPayload;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
