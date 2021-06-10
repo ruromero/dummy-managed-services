@@ -19,6 +19,13 @@
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
     <managed-services.version>1.0.0-SNAPSHOT</managed-services.version>
   </properties>
+  <repositories>
+    <repository>
+      <id>github</id>
+      <name>RedHat Developer</name>
+      <url>https://maven.pkg.github.com/redhat-developer/*</url>
+    </repository>
+  </repositories>
   <dependencyManagement>
     <dependencies>
       <dependency>
