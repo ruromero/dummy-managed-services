@@ -27,9 +27,20 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
+    - name: Install JDK 11
+      # Uses sha for added security since tags can be updated
+      uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
+      with:
+        java-version: 11
+    - name: Build Quarkus main
+      run: |
+        git clone https://github.com/quarkusio/quarkus.git
+        cd quarkus
+        ./mvnw -T1C -e -B --settings .github/mvn-settings.xml clean install -Dquickly-ci
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Run java checkstyle
-      uses: nikitasavinov/checkstyle-action@0.3.1
+      run: export LANG=en_US && ./mvnw -e -B -fae --settings .github/mvn-settings.xml clean install -Dstart-containers
+    - name: Delete Local Artifacts From Cache
+      shell: bash
+      run: rm -rf ~/.m2/repository/com/openshift/cloud/dummy-managed-services
