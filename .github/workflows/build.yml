@@ -36,7 +36,7 @@ jobs:
       run: |
         git clone https://github.com/quarkusio/quarkus.git
         cd quarkus
-        ./mvnw -T1C -e -B --settings .github/mvn-settings.xml clean install -Dquickly-ci
+        ./mvnw -T1C -e -B --settings .github/mvn-settings.xml clean install -Dquickly-ci -Pnative
     - name: Build with Maven
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
