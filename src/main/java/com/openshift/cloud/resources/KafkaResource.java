@@ -54,16 +54,16 @@ public class KafkaResource {
     @GET
     public Response get() {
         LOGGER.info("List KafkaRequest");
-        KafkaRequestList list = new KafkaRequestList();
-        kafkas.values().stream().forEach(kafka -> list.addItemsItem(kafka));
+        var list = new KafkaRequestList();
+        kafkas.values().forEach(list::addItemsItem);
         return Response.ok(list).build();
     }
 
     @POST
     public KafkaRequest create(KafkaRequestPayload request) {
         LOGGER.info("Creating new KafkaRequest {}", request);
-        String owner = (String) token.claim("preferred_username").orElse("unknown");
-        KafkaRequest kafka = new KafkaRequest();
+        var owner = (String) token.claim("preferred_username").orElse("unknown");
+        var kafka = new KafkaRequest();
         kafka.id(UUID.randomUUID().toString());
         kafka.name(request.getName());
         kafka.bootstrapServerHost("http://" + kafka.getId() + ":9092");
