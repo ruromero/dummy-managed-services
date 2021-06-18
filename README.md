@@ -23,15 +23,15 @@ At this moment these are the implemented services:
 ### ServiceAccount
 
 ```shell script
-$ curl -X POST -H "Content-type: application/json" -H "Authorization: Bearer $TKN" http://localhost:8080/api/managed-services-api/v1/serviceaccounts -d '{"name": "foo", "description": "bar"}' | jq
+$ curl -X POST -H "Content-type: application/json" -H "Authorization: Bearer $TKN" http://localhost:8080/api/kafkas_mgmt/v1/service_accounts -d '{"name": "foo", "description": "bar"}' | jq
 {
   "id": "a3e02fb2-0ede-404f-93ac-6fdd4941256b",
   "kind": null,
   "href": null,
   "name": "foo",
   "description": "bar",
-  "clientID": "svc-acc-275792144",
-  "clientSecret": "9e30213a-d798-4c35-b740-0003453e1bc8",
+  "client_id": "svc-acc-275792144",
+  "client_secret": "9e30213a-d798-4c35-b740-0003453e1bc8",
   "owner": "alice",
   "created_at": "2021-06-01T17:55:46.348782+02:00"
 }
@@ -41,7 +41,7 @@ $ curl -X POST -H "Content-type: application/json" -H "Authorization: Bearer $TK
 ### KafkaRequests
 
 ```shell script
-$ curl -H "content-type: application/json" -H "accept: application/json" -H "Authorization: Bearer $TKN" http://localhost:8080/api/managed-services-api/v1/kafkas -d '{"name": "foo", "region": "Teruel", "cloud_provider": "ibm", "multi_az": "true"}' | jq
+$ curl -H "content-type: application/json" -H "accept: application/json" -H "Authorization: Bearer $TKN" http://localhost:8080/api/kafkas_mgmt/v1/kafkas -d '{"name": "foo", "region": "Teruel", "cloud_provider": "ibm", "multi_az": "true"}' | jq
 
 {
   "id": "1779c504-f6d6-4873-b141-da4ee0b1a960",
@@ -53,7 +53,7 @@ $ curl -H "content-type: application/json" -H "accept: application/json" -H "Aut
   "region": "Teruel",
   "owner": "bob",
   "name": "foo",
-  "bootstrapServerHost": "http://1779c504-f6d6-4873-b141-da4ee0b1a960:9092",
+  "bootstrap_server_host": "http://1779c504-f6d6-4873-b141-da4ee0b1a960:9092",
   "created_at": "2021-06-02T11:35:21.028327+02:00",
   "updated_at": null,
   "failed_reason": null,
