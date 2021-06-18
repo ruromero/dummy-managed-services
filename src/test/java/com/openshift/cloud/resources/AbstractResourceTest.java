@@ -5,6 +5,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.openshift.cloud.api.kas.DefaultApi;
+import com.openshift.cloud.api.kas.SecurityApi;
 import com.openshift.cloud.api.kas.invoker.auth.HttpBearerAuth;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -18,6 +19,7 @@ import io.smallrye.jwt.build.Jwt;
 class AbstractResourceTest {
 
     DefaultApi api = new DefaultApi();
+    SecurityApi securityApi = new SecurityApi();
 
     @BeforeEach
     void init() {

@@ -1,8 +1,5 @@
 package com.openshift.cloud.resources;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 import com.openshift.cloud.api.kas.invoker.ApiException;
@@ -51,6 +48,7 @@ class KafkaResourceTest extends AbstractResourceTest {
 
         KafkaRequest other = api.getKafkaById(kafka.getId());
         assertThat(other, notNullValue());
+        assertThat(other.getId(), notNullValue());
         assertThat(other.getName(), is(kafka.getName()));
         assertThat(other.getCloudProvider(), is(kafka.getCloudProvider()));
         assertThat(other.getMultiAz(), is(kafka.getMultiAz()));
@@ -67,21 +65,21 @@ class KafkaResourceTest extends AbstractResourceTest {
 
     @Test
     void testList() throws ApiException {
-        List<KafkaRequest> kafkas = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             KafkaRequestPayload req = new KafkaRequestPayload();
             req.setName("test" + i);
             req.setCloudProvider("foo provider" + i);
             req.setRegion("Teruel" + i);
             req.setMultiAz(Boolean.TRUE);
-            kafkas.add(api.createKafka(Boolean.FALSE, req));
+            api.createKafka(Boolean.FALSE, req);
         }
 
-        KafkaRequestList list = api.listKafkas(null, null, null, null);
+        KafkaRequestList list = api.getKafkas(null, null, null, null);
         assertThat(list, notNullValue());
         assertThat(list.getItems(), hasSize(10));
-        list.getItems().stream().forEach(i -> {
+        list.getItems().forEach(i -> {
             try {
+                assertThat(i.getId(), notNullValue());
                 KafkaRequest kafka = api.getKafkaById(i.getId());
                 assertThat(kafka, notNullValue());
                 assertThat(kafka.getName(), is(i.getName()));

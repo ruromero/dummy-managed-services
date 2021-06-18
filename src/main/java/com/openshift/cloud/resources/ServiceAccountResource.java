@@ -11,7 +11,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -28,7 +27,7 @@ import com.openshift.cloud.api.kas.models.ServiceAccountRequest;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-@Path("/serviceaccounts")
+@Path("/service_accounts")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 public class ServiceAccountResource {
@@ -56,13 +55,13 @@ public class ServiceAccountResource {
     @GET
     public Response get() {
         LOGGER.info("List ServiceAccounts");
-        ServiceAccountList list = new ServiceAccountList();
-        accounts.values().stream().forEach(sa -> list.addItemsItem(toListItem(sa)));
+        var list = new ServiceAccountList();
+        accounts.values().forEach(sa -> list.addItemsItem(toListItem(sa)));
         return Response.ok(list).build();
     }
 
     private ServiceAccountListItem toListItem(ServiceAccount sa) {
-        ServiceAccountListItem item = new ServiceAccountListItem();
+        var item = new ServiceAccountListItem();
         item.setId(sa.getId());
         item.setName(sa.getName());
         item.setDescription(sa.getDescription());
@@ -70,7 +69,7 @@ public class ServiceAccountResource {
         item.setOwner(sa.getOwner());
         item.setHref(sa.getHref());
         item.setKind(sa.getKind());
-        item.setClientID(sa.getClientID());
+        item.setClientId(sa.getClientId());
         return item;
     }
 
@@ -89,7 +88,7 @@ public class ServiceAccountResource {
     public ServiceAccount create(ServiceAccountRequest request) {
         LOGGER.info("Creating new ServiceAccount {}", request);
         String owner = (String) token.claim("preferred_username").orElse("unknown");
-        ServiceAccount serviceAccount = new ServiceAccount();
+        var serviceAccount = new ServiceAccount();
         serviceAccount.id(UUID.randomUUID().toString());
         serviceAccount.name(request.getName());
         serviceAccount.description(request.getDescription());
@@ -107,13 +106,13 @@ public class ServiceAccountResource {
     }
 
     private ServiceAccount setCredentials(ServiceAccount original) {
-        ServiceAccount acc = new ServiceAccount();
+        var acc = new ServiceAccount();
         acc.setOwner(original.getOwner());
         acc.setName(original.getName());
         acc.setId(original.getId());
         acc.setCreatedAt(original.getCreatedAt());
         acc.setDescription(original.getDescription());
-        acc.setClientID("svc-acc" + rnd.nextInt());
+        acc.setClientId("svc-acc" + rnd.nextInt());
         acc.setClientSecret(UUID.randomUUID().toString());
         return acc;
     }

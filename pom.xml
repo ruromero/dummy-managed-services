@@ -17,7 +17,7 @@
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-    <managed-services.version>1.0.0-SNAPSHOT</managed-services.version>
+    <managed-services.version>0.2.0</managed-services.version>
   </properties>
   <repositories>
     <repository>
@@ -59,8 +59,8 @@
       <artifactId>quarkus-apache-httpclient</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.openshift.cloud</groupId>
-      <artifactId>managed-services-api</artifactId>
+      <groupId>cloud.redhat.com</groupId>
+      <artifactId>kafka-management-sdk</artifactId>
       <version>${managed-services.version}</version>
     </dependency>
 
