@@ -38,6 +38,11 @@ $ curl -X POST -H "Content-type: application/json" -H "Authorization: Bearer $TK
 
 ```
 
+If you need to provide some static configuration for the `client_id` and `client_secret` it is possible to provide a path containing the static configuration for any service accounts by `name`.
+Start the application with the `-Ddms.serviceaccount.static=/path/to/my/config.json` 
+
+An example is provided in the [examples/static-sa.json](./examples/static-sa.json) file.
+
 ### KafkaRequests
 
 ```shell script

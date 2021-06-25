@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dummy-managed-services
+  name: dummy-managed-services
+spec:
+  selector:
+    matchLabels:
+      deployment: dummy-managed-services
+  template:
+    metadata:
+      labels:
+        deployment: dummy-managed-services
+    spec:
+      containers:
+        - env:
+            - name: SSO_URL
+              value: https://sso.example.com/auth/realms/myrealm
+            - name: SSO_CLIENT_ID
+              value: dummy-managed-services
+            - name: SSO_CLIENT_SECRET
+              value: thesecret
+            - name: DMS_STATIC_SA_PATH
+              value: /work/config/static-sa.json
+          volumeMounts:
+            - name: static-sa
+              mountPath: /work/config
+          image: quay.io/ruben/dummy-managed-services:0.2.1
+          name: dummy-managed-services
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      volumes:
+        - name: static-sa
+          configMap:
+            name: dummy-managed-services-config

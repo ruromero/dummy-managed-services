@@ -1,0 +1,7 @@
+[
+  {
+    "name": "static-sa",
+    "client_id": "svc-static",
+    "client_secret": "the-static-secret"
+  }
+]
