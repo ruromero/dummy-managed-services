@@ -52,10 +52,11 @@ public class ServiceAccountService {
         var f = new File(staticConfig.get());
         if (f.exists()) {
             try {
+                LOGGER.info("Loading static service accounts from: {}", f.getAbsolutePath());
                 List<ServiceAccount> loadedAcc = mapper.readerForListOf(ServiceAccount.class).readValue(f);
                 loadedAcc.forEach(sa -> staticAccounts.put(sa.getName(), sa));
             } catch (IOException e) {
-                LOGGER.error("Unable to read static accounts");
+                LOGGER.error("Unable to read static accounts", e);
             }
         }
     }
