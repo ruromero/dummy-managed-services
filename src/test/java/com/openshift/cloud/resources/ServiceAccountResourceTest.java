@@ -83,4 +83,33 @@ class ServiceAccountResourceTest extends AbstractResourceTest {
         });
     }
 
+    @Test
+    void testCreateStatic() throws ApiException {
+        ServiceAccountRequest req = new ServiceAccountRequest();
+        req.setName("static-sa");
+        req.setDescription("foo");
+        ServiceAccount sa = securityApi.createServiceAccount(req);
+        assertThat(sa, notNullValue());
+        assertThat(sa.getName(), is(req.getName()));
+        assertThat(sa.getDescription(), is(req.getDescription()));
+        assertThat(sa.getId(), notNullValue());
+        assertThat(sa.getCreatedAt(), notNullValue());
+        assertThat(sa.getOwner(), is("bob"));
+        assertThat(sa.getClientId(), is("svc-static"));
+        assertThat(sa.getClientSecret(), is("the-static-secret"));
+
+        ServiceAccount testSa = securityApi.getServiceAccountById(sa.getId());
+        assertThat(testSa, notNullValue());
+        assertThat(testSa.getName(), is(sa.getName()));
+        assertThat(testSa.getDescription(), is(sa.getDescription()));
+        assertThat(testSa.getId(), is(sa.getId()));
+        assertThat(testSa.getCreatedAt(), is(sa.getCreatedAt()));
+        assertThat(testSa.getOwner(), is(sa.getOwner()));
+        assertThat(testSa.getClientId(), nullValue());
+        assertThat(testSa.getClientSecret(), nullValue());
+
+        securityApi.deleteServiceAccountById(sa.getId());
+        assertThat(securityApi.getServiceAccountById(sa.getId()), nullValue());
+    }
+
 }

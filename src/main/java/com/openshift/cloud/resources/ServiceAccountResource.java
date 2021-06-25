@@ -1,11 +1,5 @@
 package com.openshift.cloud.resources;
 
-import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -16,14 +10,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.openshift.cloud.api.kas.models.ServiceAccount;
-import com.openshift.cloud.api.kas.models.ServiceAccountList;
-import com.openshift.cloud.api.kas.models.ServiceAccountListItem;
 import com.openshift.cloud.api.kas.models.ServiceAccountRequest;
+import com.openshift.cloud.service.ServiceAccountService;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -32,88 +20,43 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Consumes(APPLICATION_JSON)
 public class ServiceAccountResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceAccountResource.class);
-    private final Random rnd = new Random();
-
-    private Map<String, ServiceAccount> accounts = new HashMap<>();
-
     @Inject
-    JsonWebToken token;
+    ServiceAccountService service;
 
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") String id) {
-        if (accounts.containsKey(id)) {
-            LOGGER.info("Returning existing ServiceAccount {}", accounts.get(id));
-            return Response.ok(accounts.get(id)).build();
+        var sa = service.get(id);
+        if (sa == null) {
+            return Response.noContent().build();
         }
-        LOGGER.info("Not found ServiceAccount {}", id);
-        return Response.noContent().build();
-
+        return Response.ok(sa).build();
     }
 
     @GET
-    public Response get() {
-        LOGGER.info("List ServiceAccounts");
-        var list = new ServiceAccountList();
-        accounts.values().forEach(sa -> list.addItemsItem(toListItem(sa)));
-        return Response.ok(list).build();
-    }
-
-    private ServiceAccountListItem toListItem(ServiceAccount sa) {
-        var item = new ServiceAccountListItem();
-        item.setId(sa.getId());
-        item.setName(sa.getName());
-        item.setDescription(sa.getDescription());
-        item.setCreatedAt(sa.getCreatedAt());
-        item.setOwner(sa.getOwner());
-        item.setHref(sa.getHref());
-        item.setKind(sa.getKind());
-        item.setClientId(sa.getClientId());
-        return item;
+    public Response list() {
+        return Response.ok(service.list()).build();
     }
 
     @POST
     @Path("/{id}/reset-credentials")
     public Response reset(@PathParam("id") String id) {
-        if (accounts.containsKey(id)) {
-            LOGGER.info("Reset credentials for existing ServiceAccount {}", accounts.get(id));
-            return Response.ok(setCredentials(accounts.get(id))).build();
+        var sa = service.reset(id);
+        if (sa == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-        LOGGER.info("Not found ServiceAccount {}", id);
-        return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.ok(sa).build();
     }
 
     @POST
-    public ServiceAccount create(ServiceAccountRequest request) {
-        LOGGER.info("Creating new ServiceAccount {}", request);
-        String owner = (String) token.claim("preferred_username").orElse("unknown");
-        var serviceAccount = new ServiceAccount();
-        serviceAccount.id(UUID.randomUUID().toString());
-        serviceAccount.name(request.getName());
-        serviceAccount.description(request.getDescription());
-        serviceAccount.createdAt(ZonedDateTime.now().toOffsetDateTime());
-        serviceAccount.setOwner(owner);
-        accounts.put(serviceAccount.getId(), serviceAccount);
-        return setCredentials(serviceAccount);
+    public Response create(ServiceAccountRequest request) {
+        return Response.ok(service.create(request)).build();
     }
 
     @DELETE
     @Path("/{id}")
     public Response delete(@PathParam("id") String id) {
-        accounts.remove(id);
+        service.delete(id);
         return Response.noContent().build();
-    }
-
-    private ServiceAccount setCredentials(ServiceAccount original) {
-        var acc = new ServiceAccount();
-        acc.setOwner(original.getOwner());
-        acc.setName(original.getName());
-        acc.setId(original.getId());
-        acc.setCreatedAt(original.getCreatedAt());
-        acc.setDescription(original.getDescription());
-        acc.setClientId("svc-acc" + rnd.nextInt());
-        acc.setClientSecret(UUID.randomUUID().toString());
-        return acc;
     }
 }
