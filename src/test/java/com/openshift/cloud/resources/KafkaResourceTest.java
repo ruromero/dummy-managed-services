@@ -42,7 +42,8 @@ class KafkaResourceTest extends AbstractResourceTest {
         assertThat(kafka.getId(), notNullValue());
         assertThat(kafka.getOwner(), is("bob"));
         assertThat(kafka.getCreatedAt(), notNullValue());
-
+        assertThat(kafka.getKind(), is("Kafka"));
+        assertThat(kafka.getHref(), is("/api/kafkas_mgmt/v1/kafkas/" + kafka.getId()));
         assertThat(kafka.getBootstrapServerHost(), notNullValue());
         assertThat(kafka.getStatus(), is("Provisioning"));
 
@@ -58,6 +59,8 @@ class KafkaResourceTest extends AbstractResourceTest {
         assertThat(other.getCreatedAt(), is(kafka.getCreatedAt()));
         assertThat(other.getBootstrapServerHost(), is(kafka.getBootstrapServerHost()));
         assertThat(other.getStatus(), is(kafka.getStatus()));
+        assertThat(other.getHref(), is(kafka.getHref()));
+        assertThat(other.getKind(), is(kafka.getKind()));
 
         Error error = api.deleteKafkaById(other.getId(), Boolean.TRUE);
         assertThat(error, nullValue());
@@ -77,6 +80,7 @@ class KafkaResourceTest extends AbstractResourceTest {
         KafkaRequestList list = api.getKafkas(null, null, null, null);
         assertThat(list, notNullValue());
         assertThat(list.getItems(), hasSize(10));
+        assertThat(list.getKind(), is("KafkaRequestList"));
         list.getItems().forEach(i -> {
             try {
                 assertThat(i.getId(), notNullValue());
@@ -89,6 +93,8 @@ class KafkaResourceTest extends AbstractResourceTest {
                 assertThat(kafka.getId(), notNullValue());
                 assertThat(kafka.getOwner(), is("bob"));
                 assertThat(kafka.getCreatedAt(), notNullValue());
+                assertThat(kafka.getKind(), is("Kafka"));
+                assertThat(kafka.getHref(), is("/api/kafkas_mgmt/v1/kafkas/" + kafka.getId()));
             } catch (ApiException e) {
                 fail(e);
             }

@@ -39,6 +39,8 @@ class ServiceAccountResourceTest extends AbstractResourceTest {
         assertThat(sa.getOwner(), is("bob"));
         assertThat(sa.getClientId(), notNullValue());
         assertThat(sa.getClientSecret(), notNullValue());
+        assertThat(sa.getKind(), is("ServiceAccount"));
+        assertThat(sa.getHref(), is("/api/kafkas_mgmt/v1/service_accounts/" + sa.getId()));
 
         ServiceAccount testSa = securityApi.getServiceAccountById(sa.getId());
         assertThat(testSa, notNullValue());
@@ -47,8 +49,10 @@ class ServiceAccountResourceTest extends AbstractResourceTest {
         assertThat(testSa.getId(), is(sa.getId()));
         assertThat(testSa.getCreatedAt(), is(sa.getCreatedAt()));
         assertThat(testSa.getOwner(), is(sa.getOwner()));
-        assertThat(testSa.getClientId(), nullValue());
+        assertThat(testSa.getClientId(), is(sa.getClientId()));
         assertThat(testSa.getClientSecret(), nullValue());
+        assertThat(testSa.getKind(), is(sa.getKind()));
+        assertThat(testSa.getHref(), is(sa.getHref()));
 
         securityApi.deleteServiceAccountById(sa.getId());
         assertThat(securityApi.getServiceAccountById(sa.getId()), nullValue());
@@ -66,6 +70,7 @@ class ServiceAccountResourceTest extends AbstractResourceTest {
         ServiceAccountList serviceAccountList = securityApi.getServiceAccounts();
         assertThat(serviceAccountList, notNullValue());
         assertThat(serviceAccountList.getItems(), hasSize(10));
+        assertThat(serviceAccountList.getKind(), is("ServiceAccountList"));
         serviceAccountList.getItems().forEach(i -> {
             try {
                 assertThat(i.getId(), notNullValue());
@@ -77,6 +82,8 @@ class ServiceAccountResourceTest extends AbstractResourceTest {
                 assertThat(sa.getCreatedAt(), is(i.getCreatedAt()));
                 assertThat(sa.getOwner(), is(i.getOwner()));
                 assertThat(sa.getClientId(), is(i.getClientId()));
+                assertThat(sa.getKind(), is("ServiceAccount"));
+                assertThat(sa.getHref(), is("/api/kafkas_mgmt/v1/service_accounts/" + sa.getId()));
             } catch (ApiException e) {
                 fail(e);
             }
@@ -105,7 +112,7 @@ class ServiceAccountResourceTest extends AbstractResourceTest {
         assertThat(testSa.getId(), is(sa.getId()));
         assertThat(testSa.getCreatedAt(), is(sa.getCreatedAt()));
         assertThat(testSa.getOwner(), is(sa.getOwner()));
-        assertThat(testSa.getClientId(), nullValue());
+        assertThat(testSa.getClientId(), is(sa.getClientId()));
         assertThat(testSa.getClientSecret(), nullValue());
 
         securityApi.deleteServiceAccountById(sa.getId());

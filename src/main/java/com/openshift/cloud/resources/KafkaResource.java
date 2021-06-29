@@ -15,7 +15,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.slf4j.Logger;
@@ -33,6 +35,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class KafkaResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaResource.class);
+    private static final String KAFKA_KIND = "Kafka";
 
     private Map<String, KafkaRequest> kafkas = new HashMap<>();
 
@@ -55,12 +58,13 @@ public class KafkaResource {
     public Response get() {
         LOGGER.info("List KafkaRequest");
         var list = new KafkaRequestList();
+        list.setKind(KafkaRequestList.class.getSimpleName());
         kafkas.values().forEach(list::addItemsItem);
         return Response.ok(list).build();
     }
 
     @POST
-    public KafkaRequest create(KafkaRequestPayload request) {
+    public KafkaRequest create(KafkaRequestPayload request, @Context UriInfo uriInfo) {
         LOGGER.info("Creating new KafkaRequest {}", request);
         var owner = (String) token.claim("preferred_username").orElse("unknown");
         var kafka = new KafkaRequest();
@@ -73,6 +77,8 @@ public class KafkaResource {
         kafka.status("Provisioning");
         kafka.createdAt(ZonedDateTime.now().toOffsetDateTime());
         kafka.setOwner(owner);
+        kafka.setKind(KAFKA_KIND);
+        kafka.setHref(uriInfo.getAbsolutePath().getPath() + "/" + kafka.getId());
         kafkas.put(kafka.getId(), kafka);
         CompletableFuture
                 .delayedExecutor(5, TimeUnit.SECONDS)
