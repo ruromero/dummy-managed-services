@@ -8,7 +8,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import com.openshift.cloud.api.kas.models.ServiceAccountRequest;
 import com.openshift.cloud.service.ServiceAccountService;
@@ -49,8 +51,8 @@ public class ServiceAccountResource {
     }
 
     @POST
-    public Response create(ServiceAccountRequest request) {
-        return Response.ok(service.create(request)).build();
+    public Response create(ServiceAccountRequest request, @Context UriInfo uriInfo) {
+        return Response.ok(service.create(request, uriInfo.getAbsolutePath().getPath())).build();
     }
 
     @DELETE
